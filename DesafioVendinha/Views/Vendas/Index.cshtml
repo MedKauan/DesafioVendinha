@@ -1,0 +1,125 @@
+﻿@model DesafioVendinha.Models.Venda
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<partial name="_Create">
+<hr>
+<div class="p-5 mb-4 bg-light rounded-3">
+
+    <div class="p-3 d-flex justify-content-between">
+        <h4>Dívidas</h4>
+        <div class="d-flex justify-content-between">
+            <h5>
+                <strong>Saldo devedor:&nbsp;</strong>
+            </h5>
+            <h5 id="saldoDevedor">R$ 0,00</h5>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CPF)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Descricao)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Valor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    Ações
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.ListagemVenda)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VendaID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nome)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CPF)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descricao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        <button id="@item.VendaID" onClick="quitar_click(this.id)" name="btnQuitar" asp-action="Details" asp-route-id="@item.VendaID" class="btn btn-primary btn-success">Quitar</button>
+                        <button id="@item.VendaID" onClick="deletar_click(this.id)" name="btnDeletar" asp-action="Delete" asp-route-id="@item.VendaID" class="btn btn-primary btn-danger">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style type="text/css">
+    .justify-content-between {
+        align-items: center;
+        justify-content: space-between !important;
+    }
+
+    .table td, .table th {
+        border-top: 0;
+    }
+</style>
+
+
+
+<script type="text/javascript">
+    function quitar_click(id_Venda){
+        var name = confirm("Voce deseja quitar a dívida ID: " + id_Venda + " ?")
+
+        if (name == true){
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function (){
+                if (this.readyState == 4 && this.status == 200){
+                }
+            };
+            xhttp.open("POST", "https://localhost:44307/Clientes/MudaStatus?id=" + id_Venda, true);
+            //xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send("{id:" + id_Venda + "}");
+            window.location.reload();
+        }
+    }
+
+    function deletar_click(id_Venda) {
+        var name = confirm("Voce deseja Deletar a venda de ID: " + id_Venda + " ?")
+
+        if (name == true) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                }
+            };
+            
+            xhttp.open("POST", "https://localhost:44307/Clientes/Delete?id=" + id_Venda, true);
+            //xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send("{id:" + id_Venda + "}");
+            window.location.reload();
+        }
+    }
+</script>
