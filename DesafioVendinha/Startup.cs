@@ -50,7 +50,7 @@ namespace DesafioVendinha
             {
                 endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Clientes}/{action=Index}/{id?}");
+                pattern: "{controller=Vendas}/{action=Index}/{id?}");
             });
         }
     }

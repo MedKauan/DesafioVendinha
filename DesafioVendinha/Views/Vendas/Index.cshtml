@@ -14,14 +14,14 @@
             <h5>
                 <strong>Saldo devedor:&nbsp;</strong>
             </h5>
-            <h5 id="saldoDevedor">R$ 0,00</h5>
+            <h5 id="saldoDevedor">@ViewBag.TotalPedidos</h5>
         </div>
     </div>
     <table class="table table-hover">
         <thead>
             <tr>
                 <th>
-                    ID
+                    Código de Venda
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Nome)
@@ -35,7 +35,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Valor)
                 </th>
-                <th>
+                <th
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
                 <th>
@@ -45,33 +45,40 @@
         </thead>
 
         <tbody>
-            @foreach (var item in Model.ListagemVenda)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VendaID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Nome)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CPF)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Descricao)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Valor)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>
-                    <td>
-                        <button id="@item.VendaID" onClick="quitar_click(this.id)" name="btnQuitar" asp-action="Details" asp-route-id="@item.VendaID" class="btn btn-primary btn-success">Quitar</button>
-                        <button id="@item.VendaID" onClick="deletar_click(this.id)" name="btnDeletar" asp-action="Delete" asp-route-id="@item.VendaID" class="btn btn-primary btn-danger">Excluir</button>
-                    </td>
-                </tr>
-            }
+            @if (Model != null && Model.ListagemVenda != null)
+             {
+                @foreach (var item in Model.ListagemVenda)
+                 {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.VendaID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nome)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CPF)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @if (item.Status == Status.Pendente)
+                            {
+                                <button id="@item.VendaID" onClick="quitar_click(this.id)" name="btnQuitar" asp-action="MudaStatus" asp-route-id="@item.VendaID" class="btn btn-primary btn-success">Quitar</button>
+
+                            }
+                            <button id="@item.VendaID" onClick="deletar_click(this.id)" name="btnDeletar" asp-action="Delete" asp-route-id="@item.VendaID" class="btn btn-primary btn-danger">Excluir</button>
+                        </td>
+                    </tr>
+                 }
+             }
         </tbody>
     </table>
 </div>
@@ -96,13 +103,13 @@
         if (name == true){
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function (){
-                if (this.readyState == 4 && this.status == 200){
+                if (this.readyState == 4 && this.status == 200) {
+                    window.location.reload();
                 }
             };
-            xhttp.open("POST", "https://localhost:44307/Clientes/MudaStatus?id=" + id_Venda, true);
+            xhttp.open("POST", "https://localhost:44307/Vendas/MudaStatus?id=" + id_Venda, true);
             //xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send("{id:" + id_Venda + "}");
-            window.location.reload();
         }
     }
 
@@ -113,13 +120,14 @@
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
+                    window.location.reload();
                 }
             };
             
-            xhttp.open("POST", "https://localhost:44307/Clientes/Delete?id=" + id_Venda, true);
+            xhttp.open("POST", "https://localhost:44307/Vendas/Delete?id=" + id_Venda, true);
             //xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send("{id:" + id_Venda + "}");
-            window.location.reload();
+            
         }
     }
 </script>

@@ -25,7 +25,6 @@
                 <div class="col-md-8">
                     <label asp-for="Descricao">Descricao</label>
                     <input asp-for="Descricao" class="form-control" placeholder="Digite aqui o que foi comprado" />
-                    <span asp-validation-for="Descricao" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4">
@@ -37,37 +36,10 @@
         </div>
 
         <div class="form-group p-2">
-            <input type="submit"  onclick="verifica()" value="Adicionar" class="btn btn-primary" />
+            <input type="submit" class="btn btn-primary" />
         </div>
     </form>
 </div>
-
-<script type="text/javascript">
-    function verifica() {
-        $("#Nome").css("background-color", "white");
-        $("#CPF").css("background-color", "white");
-        $("#Descricao").css("background-color", "white");
-        $("#Valor").css("background-color", "white");
-        if ($("#Nome").val() == "" || $("#CPF").val() == "" || $("#Descricao").val() == "" || $("#descricao").val() == "") {
-            if ($("#Nome").val() == "") {
-                $("#Nome").css("background-color", "#ff000036");
-            }
-            if ($("#CPF").val() == "") {
-                $("#CPF").css("background-color", "#ff000036");
-
-            } if ($("#Descricao").val() == "") {
-                $("#Descricao").css("background-color", "#ff000036");
-
-            }
-            if ($("#Valor").val() == "") {
-                $("#Valor").css("background-color", "#ff000036");
-
-            }
-        } else {
-            $('form').submit();
-        }
-    }
-</script>
 
 <style type="text/css">
     label {

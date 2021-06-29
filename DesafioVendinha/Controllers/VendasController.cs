@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DesafioVendinha.Data;
 using DesafioVendinha.Models;
-using System.Net;
-using System;
 
 namespace DesafioVendinha.Controllers
 {
@@ -31,56 +29,33 @@ namespace DesafioVendinha.Controllers
         }
 
 
-        // GET: Clientes
+        // GET: vendas
         public async Task<IActionResult> Index()
         {
-            var clientes = new Venda();
-            clientes.ListagemVenda = await _context.Vendas.ToListAsync();
-            ViewBag.TotalPedidos = clientes.ListagemVenda.Sum(w => w.Valor);
+            var vendas = new Venda();
+            vendas.ListagemVenda = await _context.Vendas.ToListAsync();
+            ViewBag.TotalPedidos = string.Format("{0:c}", vendas.ListagemVenda.Where(w => w.Status == Status.Pendente).Sum(w => w.Valor));
 
-            return View(clientes);
+            return View(vendas);
         }
 
-        // GET: Clientes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var cliente = await _context.Vendas
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.VendaID == id);
-
-            if (cliente == null)
-
-            {
-                return NotFound();
-            }
-
-            return View(cliente);
-        }
-
-        // GET: Clientes/Create
+        // GET: vendas/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: vendas/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Venda cliente)
+        public async Task<IActionResult> Create(Venda venda)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    cliente.Status = Status.Pendente;
-                    _context.Add(cliente);
+                    venda.Status = Status.Pendente;
+                    _context.Add(venda);
                     await _context.SaveChangesAsync();
 
                     return RedirectToAction("Index");
@@ -93,98 +68,22 @@ namespace DesafioVendinha.Controllers
                     "Tente novamente, e se o problema persistir " +
                     "chame o suporte.");
             }
-            return View(cliente);
+
+            venda.ListagemVenda = await _context.Vendas.ToListAsync();
+            ViewBag.TotalPedidos = string.Format("{0:c}", venda.ListagemVenda.Where(w => w.Status == Status.Pendente).Sum(w => w.Valor));
+
+
+            return View("Index", venda);
         }
 
-        // GET: Clientes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var deletaVenda = await _context.Vendas.FirstOrDefaultAsync(s => s.VendaID == id);
+            _context.Vendas.Remove(deletaVenda);
+            await _context.SaveChangesAsync();
 
-            var cliente = await _context.Vendas.FindAsync(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-            return View(cliente);
-        }
-
-        // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPost(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var atualizarEstudante = await _context.Vendas.SingleOrDefaultAsync(s => s.Valor == id);
-            if (await TryUpdateModelAsync<Venda>(
-                atualizarEstudante,
-                "",
-                s => s.Nome, s => s.CPF, s => s.Descricao, s => s.Valor))
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
-                }
-                catch (DbUpdateException /* ex */)
-                {
-                    //Logar o erro (descomente a variável ex e escreva um log
-                    ModelState.AddModelError("", "Não foi possível salvar. " +
-                        "Tente novamente, e se o problema persistir " +
-                        "chame o suporte.");
-                }
-            }
-            return View(atualizarEstudante);
-        }
-
-        // GET: Clientes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var cliente = await _context.Vendas
-                .FirstOrDefaultAsync(m => m.VendaID == id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
-
-            return View(cliente);
-        }
-
-        // POST: Clientes/Delete/5
-        public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var estudante = await _context.Vendas
-                .AsNoTracking()
-                .SingleOrDefaultAsync(m => m.VendaID == id);
-
-            if (estudante == null)
-            {
-                return NotFound();
-            }
-            if (saveChangesError.GetValueOrDefault())
-            {
-                ViewData["ErrorMessage"] =
-                    "A exclusão falhou. Tente novamente e se o problema persistir " +
-                    "contate o suporte.";
-            }
-            return View(estudante);
+            return RedirectToAction("Index");
         }
     }
 }

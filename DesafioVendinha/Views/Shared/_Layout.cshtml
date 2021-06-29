@@ -26,13 +26,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
     <script src="~/js/jquery.inputmask.min.js"></script>
+    @*<script src="~/js//jquery.maskMoney.js"></script>*@
     @RenderSection("Scripts", required: false)
 
     <script>
         $(document).ready(function () {
-            $(".data").inputmask('99/99/9999');
             $(".cpf").inputmask('999.999.999-99');
-        });        
+            //$("#Valor").maskMoney({ thousands: ".", decimal: ",", prefix: 'R$ '});
+        });
     </script>
 
 </body>
