@@ -19,6 +19,7 @@ namespace DesafioVendinha.Models
         [Required(ErrorMessage = "O campo CPF deve ser preenchido")]
         public string CPF { get; set; }
 
+        [Display(Name = "Descrição")]
         public string Descricao { get; set; }
 
         [Required(ErrorMessage = "O campo Valor deve ser preenchido")]

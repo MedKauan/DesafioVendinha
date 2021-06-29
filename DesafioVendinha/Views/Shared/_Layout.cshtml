@@ -15,6 +15,15 @@
             <span class="fs-4">&nbsp Vendinha Interfocus</span>
         </a>
     </header>
+    @if(ViewData["erro"] != null)
+     {
+        <div class="alert alert-danger" role="alert">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            @ViewData["erro"]
+        </div>
+     }
+    
+
     <div class="container container-fluid py-4 w-75 mw-100">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -26,13 +35,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="~/js/site.min.js" asp-append-version="true"></script>
     <script src="~/js/jquery.inputmask.min.js"></script>
-    @*<script src="~/js//jquery.maskMoney.js"></script>*@
     @RenderSection("Scripts", required: false)
 
     <script>
         $(document).ready(function () {
             $(".cpf").inputmask('999.999.999-99');
-            //$("#Valor").maskMoney({ thousands: ".", decimal: ",", prefix: 'R$ '});
         });
     </script>
 

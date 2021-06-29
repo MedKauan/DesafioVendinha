@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DesafioVendinha.Data;
 using DesafioVendinha.Models;
+using System;
 
 namespace DesafioVendinha.Controllers
 {
@@ -33,7 +34,7 @@ namespace DesafioVendinha.Controllers
         public async Task<IActionResult> Index()
         {
             var vendas = new Venda();
-            vendas.ListagemVenda = await _context.Vendas.ToListAsync();
+            vendas.ListagemVenda = await _context.Vendas.OrderByDescending(o => o.Valor).ToListAsync();
             ViewBag.TotalPedidos = string.Format("{0:c}", vendas.ListagemVenda.Where(w => w.Status == Status.Pendente).Sum(w => w.Valor));
 
             return View(vendas);
@@ -50,26 +51,34 @@ namespace DesafioVendinha.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Venda venda)
         {
+            venda.ListagemVenda = await _context.Vendas.ToListAsync();
+
             try
             {
-                if (ModelState.IsValid)
-                {
-                    venda.Status = Status.Pendente;
-                    _context.Add(venda);
-                    await _context.SaveChangesAsync();
+                var count = venda.ListagemVenda.Where(w => w.CPF == venda.CPF && w.Status == Status.Pendente).Count();
 
-                    return RedirectToAction("Index");
+                if(count == 0)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        venda.Status = Status.Pendente;
+                        _context.Add(venda);
+                        await _context.SaveChangesAsync();
+
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    throw new System.Exception("Existe Divida");
                 }
             }
-            catch (DbUpdateException /* ex */)
+            catch (Exception  ex)
             {
-                //Logar o erro (descomente a variável ex e escreva um log
-                ModelState.AddModelError("", "Não foi possível salvar. " +
-                    "Tente novamente, e se o problema persistir " +
-                    "chame o suporte.");
+                ViewData["erro"] = ex.Message;
             }
 
-            venda.ListagemVenda = await _context.Vendas.ToListAsync();
+            
             ViewBag.TotalPedidos = string.Format("{0:c}", venda.ListagemVenda.Where(w => w.Status == Status.Pendente).Sum(w => w.Valor));
 
 

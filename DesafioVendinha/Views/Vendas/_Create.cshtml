@@ -2,7 +2,7 @@
 
 <div class="p-5 mb-4 bg-light rounded-3">
     <h3 class="p-2">Adicionar Nova Dívida:</h3>
-    <form asp-action="Create">
+    <form asp-action="Create" >
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group p-2 mb-1">
             <div class="row">
@@ -14,7 +14,7 @@
 
                 <div class="col-md-6">
                     <label asp-for="CPF">CPF</label>
-                    <input asp-for="CPF" class="form-control cpf" placeholder="123.456.789-10" />
+                    <input asp-for="CPF" onblur="validarCPF(this)" class="form-control cpf" placeholder="123.456.789-10" />
                     <span asp-validation-for="CPF" class="text-danger"></span>
                 </div>
             </div>
@@ -23,7 +23,7 @@
         <div class="form-group p-2 mb-1">
             <div class="row">
                 <div class="col-md-8">
-                    <label asp-for="Descricao">Descricao</label>
+                    <label asp-for="Descricao">Descrição</label>
                     <input asp-for="Descricao" class="form-control" placeholder="Digite aqui o que foi comprado" />
                 </div>
 
@@ -46,3 +46,50 @@
         margin-bottom: 0;
     }
 </style>
+
+<script>
+
+    function _cpf(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf == '') return false;
+        if (cpf.length != 11 ||
+            cpf == "00000000000" ||
+            cpf == "11111111111" ||
+            cpf == "22222222222" ||
+            cpf == "33333333333" ||
+            cpf == "44444444444" ||
+            cpf == "55555555555" ||
+            cpf == "66666666666" ||
+            cpf == "77777777777" ||
+            cpf == "88888888888" ||
+            cpf == "99999999999")
+            return false;
+        add = 0;
+        for (i = 0; i < 9; i++)
+            add += parseInt(cpf.charAt(i)) * (10 - i);
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11)
+            rev = 0;
+        if (rev != parseInt(cpf.charAt(9)))
+            return false;
+        add = 0;
+        for (i = 0; i < 10; i++)
+            add += parseInt(cpf.charAt(i)) * (11 - i);
+        rev = 11 - (add % 11);
+        if (rev == 10 || rev == 11)
+            rev = 0;
+        if (rev != parseInt(cpf.charAt(10)))
+            return false;
+        return true;
+    }
+
+    function validarCPF(el) {
+        if (!_cpf(el.value)) {
+
+            alert("CPF inválido! " + el.value);
+
+            // apaga o valor
+            el.value = "";
+        }
+    }
+</script>
